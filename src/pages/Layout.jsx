@@ -11,7 +11,7 @@ const Layout = () => {
       <Sidebar />
       <Box sx={{ flexGrow: 1 }}>
         <Navbar />
-        <Box sx={{ p: 2 }}>
+        <Box sx={{ p: 2 ,minWeight:'100vw' }}>
           <Outlet />
         </Box>
       </Box>
