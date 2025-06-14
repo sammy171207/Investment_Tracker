@@ -2,6 +2,9 @@
 
 A modern web application for tracking and managing your investments with real-time market data and beautiful visualizations.
 
+##Live Link
+https://investment-tracker-nu.vercel.app/
+
 ## 🚀 Quick Start
 
 1. Clone the repository
