@@ -53,14 +53,14 @@ const Compare = () => {
   ];
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 6, mb: 6, px: { xs: 2, md: 4 } }}>
+    <Container maxWidth="xl" sx={{ mt: 0, mb: 0, px: { xs: 2, md: 4 } }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
         <Typography
           variant="h4"
           gutterBottom
           sx={{ 
             textAlign: 'center', 
-            color: 'primary.main', 
+            color: '#F3F4F6',
             fontWeight: 'bold',
             mb: 4
           }}
@@ -84,13 +84,26 @@ const Compare = () => {
             onChange={(event) => handleStockChange(event, 1)}
             sx={{ 
               width: { xs: '100%', md: '300px' },
-              backgroundColor: '#fff',
+              backgroundColor: '#23272F',
+              color: '#F3F4F6',
               borderRadius: 2,
-              boxShadow: 1
+              boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)',
+              '.MuiSvgIcon-root': { color: '#F3F4F6' },
+              '.MuiOutlinedInput-notchedOutline': { borderColor: '#374151' },
+              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#60A5FA' },
+            }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  background: '#23272F',
+                  color: '#F3F4F6',
+                  borderRadius: 2,
+                },
+              },
             }}
           >
             {stocks.map((stock) => (
-              <MenuItem key={stock.symbol} value={stock.symbol}>
+              <MenuItem key={stock.symbol} value={stock.symbol} sx={{ color: '#F3F4F6', background: '#23272F', '&:hover': { background: '#1E293B' } }}>
                 {stock.name} ({stock.symbol})
               </MenuItem>
             ))}
@@ -101,13 +114,26 @@ const Compare = () => {
             onChange={(event) => handleStockChange(event, 2)}
             sx={{ 
               width: { xs: '100%', md: '300px' },
-              backgroundColor: '#fff',
+              backgroundColor: '#23272F',
+              color: '#F3F4F6',
               borderRadius: 2,
-              boxShadow: 1
+              boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)',
+              '.MuiSvgIcon-root': { color: '#F3F4F6' },
+              '.MuiOutlinedInput-notchedOutline': { borderColor: '#374151' },
+              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#60A5FA' },
+            }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  background: '#23272F',
+                  color: '#F3F4F6',
+                  borderRadius: 2,
+                },
+              },
             }}
           >
             {stocks.map((stock) => (
-              <MenuItem key={stock.symbol} value={stock.symbol}>
+              <MenuItem key={stock.symbol} value={stock.symbol} sx={{ color: '#F3F4F6', background: '#23272F', '&:hover': { background: '#1E293B' } }}>
                 {stock.name} ({stock.symbol})
               </MenuItem>
             ))}
@@ -116,21 +142,24 @@ const Compare = () => {
 
         {/* Comparison Chart */}
         <Paper
-          elevation={2}
+          elevation={0}
           sx={{
             width: '100%',
-            borderRadius: 2,
+            borderRadius: 4,
             overflow: 'hidden',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            background: '#23272F',
+            color: '#F3F4F6',
+            boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)',
           }}
         >
-          <Box sx={{ p: 3, bgcolor: 'background.paper', textAlign: 'center' }}>
+          <Box sx={{ p: 3, bgcolor: 'transparent', textAlign: 'center' }}>
             <Typography
               variant="h6"
               sx={{ 
                 fontWeight: 'bold',
-                color: 'text.primary'
+                color: '#F3F4F6'
               }}
             >
               Comparison Chart
@@ -146,45 +175,48 @@ const Compare = () => {
               <LineChart
                 data={comparisonData}
                 margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
+                  top: 24,
+                  right: 32,
+                  left: 16,
+                  bottom: 24,
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid stroke="#374151" />
                 <XAxis 
                   dataKey="name"
-                  tick={{ fontSize: isMobile ? 10 : 12 }}
+                  tick={{ fontSize: isMobile ? 10 : 12, fill: '#9CA3AF' }}
+                  stroke="#9CA3AF"
                 />
                 <YAxis 
-                  tick={{ fontSize: isMobile ? 10 : 12 }}
+                  tick={{ fontSize: isMobile ? 10 : 12, fill: '#9CA3AF' }}
+                  stroke="#9CA3AF"
                 />
                 <Tooltip 
                   formatter={(value) => value.toFixed(2)}
                   contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    background: '#23272F',
+                    color: '#F3F4F6',
                     borderRadius: '8px',
                     border: 'none',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    boxShadow: '0 2px 8px 0 rgba(0,0,0,0.18)'
                   }}
                 />
-                <Legend />
+                <Legend wrapperStyle={{ color: '#F3F4F6' }} />
                 <Line
                   type="monotone"
                   dataKey="price"
-                  stroke="#8884d8"
+                  stroke="#60A5FA"
                   name="Price"
-                  strokeWidth={2}
+                  strokeWidth={3}
                   dot={{ r: isMobile ? 3 : 5 }}
                   activeDot={{ r: isMobile ? 5 : 8 }}
                 />
                 <Line
                   type="monotone"
                   dataKey="change"
-                  stroke="#82ca9d"
+                  stroke="#22D3EE"
                   name="Change"
-                  strokeWidth={2}
+                  strokeWidth={3}
                   dot={{ r: isMobile ? 3 : 5 }}
                   activeDot={{ r: isMobile ? 5 : 8 }}
                 />

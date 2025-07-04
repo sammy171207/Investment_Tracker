@@ -17,6 +17,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link, useNavigate } from 'react-router-dom';
 import SearchBox from './SearchBox';
+import Avatar from '@mui/material/Avatar';
 
 const navLinks = [
   { title: 'Dashboard', path: '/' },
@@ -61,8 +62,8 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ background: 'linear-gradient(to right, #1e3a8a, #7e22ce)' }}>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <AppBar position="static" sx={{ background: '#181C23', boxShadow: 'none', borderBottom: '1px solid #23272F' }}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', minHeight: 72 }}>
           {/* Left Side: Logo and Menu Button */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             {isTabletOrBelow && (
@@ -71,6 +72,7 @@ const Navbar = () => {
                 color="inherit"
                 aria-label="menu"
                 onClick={handleDrawerToggle}
+                sx={{ mr: 1 }}
               >
                 <MenuIcon />
               </IconButton>
@@ -83,13 +85,15 @@ const Navbar = () => {
                 color: 'white',
                 fontWeight: 'bold',
                 textDecoration: 'none',
+                fontSize: 22,
+                letterSpacing: 1,
               }}
             >
-              Investment Tracker
+              <span style={{ fontWeight: 700 }}>WealthTrack</span>
             </Typography>
           </Box>
 
-          {/* Desktop Navigation and Search */}
+          {/* Desktop Navigation, Search, and Avatar */}
           {!isTabletOrBelow && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
               {navLinks.map((item) => (
@@ -97,14 +101,15 @@ const Navbar = () => {
                   key={item.title}
                   component={Link}
                   to={item.path}
-                  sx={{ color: 'white', fontWeight: 500 }}
+                  sx={{ color: '#E5E7EB', fontWeight: 500, fontSize: 16, textTransform: 'none', px: 2, borderRadius: 2, '&:hover': { background: '#23272F' } }}
                 >
                   {item.title}
                 </Button>
               ))}
-              <Box sx={{ maxWidth: 300, width: '100%' }}>
-                <SearchBox onStockSelect={handleStockSelect} />
+              <Box sx={{ maxWidth: 260, width: '100%', mx: 2 }}>
+                <SearchBox onStockSelect={handleStockSelect} sx={{ borderRadius: 2, background: '#23272F', color: '#E5E7EB' }} />
               </Box>
+              <Avatar sx={{ bgcolor: '#374151', width: 40, height: 40, fontWeight: 600 }}>SC</Avatar>
             </Box>
           )}
         </Toolbar>
@@ -116,14 +121,15 @@ const Navbar = () => {
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{ keepMounted: true }}
+        PaperProps={{ sx: { background: '#181C23', color: '#E5E7EB' } }}
       >
         {drawer}
       </Drawer>
 
       {/* Mobile Search Box */}
       {isTabletOrBelow && (
-        <Box sx={{ px: 2, py: 1.5, backgroundColor: 'white', boxShadow: 1 }}>
-          <SearchBox onStockSelect={handleStockSelect} />
+        <Box sx={{ px: 2, py: 1.5, backgroundColor: '#23272F', boxShadow: 1 }}>
+          <SearchBox onStockSelect={handleStockSelect} sx={{ borderRadius: 2, background: '#23272F', color: '#E5E7EB' }} />
         </Box>
       )}
     </>

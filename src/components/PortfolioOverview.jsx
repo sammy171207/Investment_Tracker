@@ -80,9 +80,13 @@ const PortfolioOverview = () => {
         <Grid container spacing={4} sx={{ mb: 6, justifyContent: 'center', width: '100%' }}>
           <Grid item xs={12} md={4}>
             <Card 
-              elevation={2} 
+              elevation={0} 
               sx={{ 
                 height: '100%', 
+                background: '#23272F',
+                color: '#F3F4F6',
+                borderRadius: 4,
+                boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)',
                 transition: 'transform 0.2s', 
                 '&:hover': { transform: 'translateY(-4px)' },
                 minWidth: 300,
@@ -92,10 +96,10 @@ const PortfolioOverview = () => {
               }}
             >
               <CardContent sx={{ p: 4, textAlign: 'center' }}>
-                <Typography color="textSecondary" gutterBottom variant="subtitle2" sx={{ mb: 2 }}>
+                <Typography color="#9CA3AF" gutterBottom variant="subtitle2" sx={{ mb: 2 }}>
                   Total Portfolio Value
                 </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#F3F4F6' }}>
                   {formatCurrency(totalValue)}
                 </Typography>
               </CardContent>
@@ -103,9 +107,13 @@ const PortfolioOverview = () => {
           </Grid>
           <Grid item xs={12} md={4}>
             <Card 
-              elevation={2} 
+              elevation={0} 
               sx={{ 
                 height: '100%', 
+                background: '#23272F',
+                color: '#F3F4F6',
+                borderRadius: 4,
+                boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)',
                 transition: 'transform 0.2s', 
                 '&:hover': { transform: 'translateY(-4px)' },
                 minWidth: 300,
@@ -115,12 +123,12 @@ const PortfolioOverview = () => {
               }}
             >
               <CardContent sx={{ p: 4, textAlign: 'center' }}>
-                <Typography color="textSecondary" gutterBottom variant="subtitle2" sx={{ mb: 2 }}>
+                <Typography color="#9CA3AF" gutterBottom variant="subtitle2" sx={{ mb: 2 }}>
                   Daily Change
                 </Typography>
-                <Typography variant="h4" color={dailyPerformance[0]?.change >= 0 ? 'success.main' : 'error.main'} sx={{ fontWeight: 'bold' }}>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: dailyPerformance[0]?.change >= 0 ? '#22D3EE' : '#F87171' }}>
                   {formatCurrency(dailyPerformance[0]?.change || 0)}
-                  <Typography component="span" variant="subtitle1" sx={{ display: 'block', mt: 1 }}>
+                  <Typography component="span" variant="subtitle1" sx={{ display: 'block', mt: 1, color: '#9CA3AF' }}>
                     ({formatPercentage(dailyPerformance[0]?.changePercent || 0)})
                   </Typography>
                 </Typography>
@@ -129,9 +137,13 @@ const PortfolioOverview = () => {
           </Grid>
           <Grid item xs={12} md={4}>
             <Card 
-              elevation={2} 
+              elevation={0} 
               sx={{ 
                 height: '100%', 
+                background: '#23272F',
+                color: '#F3F4F6',
+                borderRadius: 4,
+                boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)',
                 transition: 'transform 0.2s', 
                 '&:hover': { transform: 'translateY(-4px)' },
                 minWidth: 300,
@@ -141,10 +153,10 @@ const PortfolioOverview = () => {
               }}
             >
               <CardContent sx={{ p: 4, textAlign: 'center' }}>
-                <Typography color="textSecondary" gutterBottom variant="subtitle2" sx={{ mb: 2 }}>
+                <Typography color="#9CA3AF" gutterBottom variant="subtitle2" sx={{ mb: 2 }}>
                   Number of Assets
                 </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#F3F4F6' }}>
                   {portfolio.length}
                 </Typography>
               </CardContent>
@@ -157,18 +169,21 @@ const PortfolioOverview = () => {
           {/* Portfolio Distribution Chart */}
           <Grid item xs={12} md={6} sx={{ width: '100%' }}>
             <Paper 
-              elevation={2} 
+              elevation={0} 
               sx={{ 
                 height: isMobile ? '350px' : '450px',
-                borderRadius: 2, 
+                borderRadius: 4, 
                 overflow: 'hidden',
                 width: '100%',
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                background: '#23272F',
+                color: '#F3F4F6',
+                boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)',
               }}
             >
-              <Box sx={{ p: 3, bgcolor: 'background.paper', textAlign: 'center' }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              <Box sx={{ p: 3, bgcolor: 'transparent', textAlign: 'center' }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#F3F4F6' }}>
                   Portfolio Distribution
                 </Typography>
               </Box>
@@ -196,34 +211,32 @@ const PortfolioOverview = () => {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => formatCurrency(value)} />
-                    <Legend 
-                      layout={isMobile ? "horizontal" : "vertical"}
-                      verticalAlign={isMobile ? "bottom" : "middle"}
-                      align={isMobile ? "center" : "right"}
-                    />
+                    <Tooltip formatter={(value) => formatCurrency(value)} contentStyle={{ background: '#23272F', color: '#F3F4F6', border: 'none', borderRadius: 8 }} />
+                    <Legend wrapperStyle={{ color: '#F3F4F6' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </Box>
             </Paper>
           </Grid>
-
-          {/* Performance Chart */}
+          {/* Performance Over Time Chart */}
           <Grid item xs={12} md={6} sx={{ width: '100%' }}>
             <Paper 
-              elevation={2} 
+              elevation={0} 
               sx={{ 
                 height: isMobile ? '350px' : '450px',
-                borderRadius: 2, 
+                borderRadius: 4, 
                 overflow: 'hidden',
                 width: '100%',
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                background: '#23272F',
+                color: '#F3F4F6',
+                boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)',
               }}
             >
-              <Box sx={{ p: 3, bgcolor: 'background.paper', textAlign: 'center' }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                  Portfolio Performance
+              <Box sx={{ p: 3, bgcolor: 'transparent', textAlign: 'center' }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#F3F4F6' }}>
+                  Performance Over Time
                 </Typography>
               </Box>
               <Box sx={{ 
@@ -235,33 +248,13 @@ const PortfolioOverview = () => {
                 justifyContent: 'center'
               }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={dailyPerformance}
-                    margin={{
-                      top: 5,
-                      right: 30,
-                      left: 20,
-                      bottom: 5,
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="date" 
-                      tick={{ fontSize: isMobile ? 10 : 12 }}
-                    />
-                    <YAxis 
-                      tick={{ fontSize: isMobile ? 10 : 12 }}
-                    />
-                    <Tooltip formatter={(value) => formatCurrency(value)} />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="value"
-                      stroke="#8884d8"
-                      name="Portfolio Value"
-                      dot={!isMobile}
-                      strokeWidth={2}
-                    />
+                  <LineChart data={dailyPerformance} margin={{ top: 16, right: 16, left: 16, bottom: 16 }}>
+                    <CartesianGrid stroke="#374151" />
+                    <XAxis dataKey="date" stroke="#9CA3AF" />
+                    <YAxis stroke="#9CA3AF" />
+                    <Tooltip contentStyle={{ background: '#23272F', color: '#F3F4F6', border: 'none', borderRadius: 8 }} />
+                    <Legend wrapperStyle={{ color: '#F3F4F6' }} />
+                    <Line type="monotone" dataKey="value" stroke="#60A5FA" strokeWidth={3} dot={false} />
                   </LineChart>
                 </ResponsiveContainer>
               </Box>

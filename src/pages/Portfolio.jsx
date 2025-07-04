@@ -58,44 +58,44 @@ const Portfolio = () => {
   const totalGainLossPercentage = (totalGainLoss / totalCost) * 100;
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
-      <Box sx={{ mb: 6 }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+    <Container maxWidth="lg" sx={{ mt: 0, mb: 0, p: 0 }}>
+      <Box sx={{ mb: 6, p: { xs: 2, md: 4 }, background: '#23272F', borderRadius: 4, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)' }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: '#F3F4F6' }}>
           My Portfolio
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
+        <Typography variant="subtitle1" sx={{ mb: 4, color: '#9CA3AF' }}>
           Track and manage your investment portfolio
         </Typography>
       </Box>
 
       {/* Portfolio Overview with Charts */}
-      <Box mb={6}>
+      <Box mb={6} sx={{ background: '#23272F', borderRadius: 4, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)', p: { xs: 2, md: 4 } }}>
         <PortfolioOverview />
       </Box>
 
       {/* Holdings Table */}
-      <Paper elevation={2} sx={{ borderRadius: 2, overflow: 'hidden' }}>
-        <Box sx={{ p: 3, bgcolor: 'background.paper', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+      <Paper elevation={0} sx={{ borderRadius: 4, overflow: 'hidden', background: '#23272F', boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)', mb: 6 }}>
+        <Box sx={{ p: 3, bgcolor: 'transparent', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#F3F4F6' }}>
             Holdings
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{ color: '#9CA3AF' }}>
             {portfolio.length} {portfolio.length === 1 ? 'holding' : 'holdings'}
           </Typography>
         </Box>
-        <Divider />
+        <Divider sx={{ borderColor: '#374151' }} />
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: 'background.default' }}>
-                <TableCell sx={{ fontWeight: 'bold' }}>Symbol</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 'bold' }}>Shares</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 'bold' }}>Purchase Price</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 'bold' }}>Current Price</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 'bold' }}>Total Value</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 'bold' }}>Gain/Loss</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+              <TableRow sx={{ bgcolor: 'transparent' }}>
+                <TableCell sx={{ fontWeight: 'bold', color: '#F3F4F6', borderBottom: '1px solid #374151' }}>Symbol</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#F3F4F6', borderBottom: '1px solid #374151' }}>Name</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 'bold', color: '#F3F4F6', borderBottom: '1px solid #374151' }}>Shares</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 'bold', color: '#F3F4F6', borderBottom: '1px solid #374151' }}>Purchase Price</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 'bold', color: '#F3F4F6', borderBottom: '1px solid #374151' }}>Current Price</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 'bold', color: '#F3F4F6', borderBottom: '1px solid #374151' }}>Total Value</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 'bold', color: '#F3F4F6', borderBottom: '1px solid #374151' }}>Gain/Loss</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 'bold', color: '#F3F4F6', borderBottom: '1px solid #374151' }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -109,26 +109,26 @@ const Portfolio = () => {
                   <TableRow 
                     key={stock.ticker}
                     sx={{ 
-                      '&:hover': { bgcolor: 'action.hover' },
-                      transition: 'background-color 0.2s'
+                      '&:hover': { bgcolor: '#1F2937' },
+                      transition: 'background-color 0.2s',
                     }}
                   >
                     <TableCell>
-                      <Typography variant="subtitle1" fontWeight="bold" color="primary">
+                      <Typography variant="subtitle1" fontWeight="bold" sx={{ color: '#60A5FA' }}>
                         {stock.ticker}
                       </Typography>
                     </TableCell>
-                    <TableCell>{stock.name}</TableCell>
-                    <TableCell align="right">{stock.shares}</TableCell>
-                    <TableCell align="right">{formatCurrency(stock.purchasePrice)}</TableCell>
-                    <TableCell align="right">{formatCurrency(stock.currentPrice)}</TableCell>
-                    <TableCell align="right">{formatCurrency(totalStockValue)}</TableCell>
+                    <TableCell sx={{ color: '#F3F4F6' }}>{stock.name}</TableCell>
+                    <TableCell align="right" sx={{ color: '#F3F4F6' }}>{stock.shares}</TableCell>
+                    <TableCell align="right" sx={{ color: '#F3F4F6' }}>{formatCurrency(stock.purchasePrice)}</TableCell>
+                    <TableCell align="right" sx={{ color: '#F3F4F6' }}>{formatCurrency(stock.currentPrice)}</TableCell>
+                    <TableCell align="right" sx={{ color: '#F3F4F6' }}>{formatCurrency(totalStockValue)}</TableCell>
                     <TableCell align="right">
                       <Box display="flex" alignItems="center" justifyContent="flex-end" gap={1}>
-                        {gainLoss >= 0 ? <TrendingUpIcon color="success" /> : <TrendingDownIcon color="error" />}
-                        <Typography color={gainLoss >= 0 ? 'success.main' : 'error.main'} fontWeight="medium">
+                        {gainLoss >= 0 ? <TrendingUpIcon sx={{ color: '#22D3EE' }} /> : <TrendingDownIcon sx={{ color: '#F87171' }} />}
+                        <Typography sx={{ color: gainLoss >= 0 ? '#22D3EE' : '#F87171', fontWeight: 600 }}>
                           {formatCurrency(gainLoss)}
-                          <Typography component="span" variant="body2" sx={{ ml: 1 }}>
+                          <Typography component="span" variant="body2" sx={{ ml: 1, color: '#9CA3AF' }}>
                             ({formatPercentage(gainLossPercentage)})
                           </Typography>
                         </Typography>
@@ -136,16 +136,16 @@ const Portfolio = () => {
                     </TableCell>
                     <TableCell align="right">
                       <IconButton
-                        color="error"
-                        onClick={() => handleRemoveStock(stock.ticker)}
-                        size="small"
                         sx={{ 
+                          color: '#F87171',
                           '&:hover': { 
-                            bgcolor: 'error.lighter',
+                            bgcolor: '#1E293B',
                             transform: 'scale(1.1)'
                           },
                           transition: 'all 0.2s'
                         }}
+                        onClick={() => handleRemoveStock(stock.ticker)}
+                        size="small"
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -156,10 +156,10 @@ const Portfolio = () => {
               {portfolio.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={8} align="center" sx={{ py: 6 }}>
-                    <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography variant="h6" sx={{ mb: 2, color: '#9CA3AF' }}>
                       Your portfolio is empty
                     </Typography>
-                    <Typography variant="body1" color="text.secondary">
+                    <Typography variant="body1" sx={{ color: '#9CA3AF' }}>
                       Add stocks to start tracking your investments
                     </Typography>
                   </TableCell>

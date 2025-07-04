@@ -26,7 +26,7 @@ const StockCard = ({ stock }) => {
 
   const handleCardClick = () => {
     console.log('Card clicked:', stock);
-    dispatch(setSelectedStock(stock.ticker));
+    dispatch(setSelectedStock(stock));
   };
 
   const handleWatchlistToggle = (e) => {
@@ -66,10 +66,14 @@ const StockCard = ({ stock }) => {
       <Card
         sx={{
           cursor: 'pointer',
+          background: '#23272F',
+          color: '#F3F4F6',
+          borderRadius: 4,
+          boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)',
           transition: 'transform 0.2s, box-shadow 0.2s',
           '&:hover': {
             transform: 'translateY(-4px)',
-            boxShadow: 4,
+            boxShadow: 6,
           },
         }}
         onClick={handleCardClick}
@@ -77,17 +81,17 @@ const StockCard = ({ stock }) => {
         <CardContent>
           <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
             <Box>
-              <Typography variant="h6" component="div" gutterBottom>
+              <Typography variant="h6" component="div" gutterBottom sx={{ fontWeight: 'bold', color: '#60A5FA' }}>
                 {stock.ticker}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: '#9CA3AF' }}>
                 {stock.name}
               </Typography>
             </Box>
             <Box>
               <IconButton
                 onClick={handleWatchlistToggle}
-                color={isWatched ? 'warning' : 'default'}
+                sx={{ color: isWatched ? '#FBBF24' : '#9CA3AF', background: 'rgba(255,255,255,0.04)', borderRadius: 2, '&:hover': { background: '#1E293B' } }}
                 size="small"
               >
                 {isWatched ? <StarIcon /> : <StarBorderIcon />}
@@ -97,7 +101,7 @@ const StockCard = ({ stock }) => {
                 size="small"
                 startIcon={<AddIcon />}
                 onClick={handleAddToPortfolio}
-                sx={{ ml: 1 }}
+                sx={{ ml: 1, background: '#2563EB', color: '#F3F4F6', borderRadius: 2, fontWeight: 600, boxShadow: 'none', '&:hover': { background: '#1D4ED8' } }}
               >
                 Add
               </Button>
@@ -105,26 +109,33 @@ const StockCard = ({ stock }) => {
           </Box>
 
           <Box display="flex" alignItems="center" gap={1} mb={1}>
-            <Typography variant="h5" component="div">
+            <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', color: '#F3F4F6' }}>
               {formatCurrency(stock.currentPrice)}
             </Typography>
             <Chip
-              icon={stock.change >= 0 ? <TrendingUpIcon /> : <TrendingDownIcon />}
+              icon={stock.change >= 0 ? <TrendingUpIcon sx={{ color: '#22D3EE' }} /> : <TrendingDownIcon sx={{ color: '#F87171' }} />}
               label={`${formatCurrency(stock.change)} (${formatPercentage(stock.changePercent)})`}
-              color={stock.change >= 0 ? 'success' : 'error'}
+              sx={{
+                ml: 1,
+                background: stock.change >= 0 ? '#1E293B' : '#1E293B',
+                color: stock.change >= 0 ? '#22D3EE' : '#F87171',
+                fontWeight: 600,
+                borderRadius: 2,
+                px: 1.5,
+                '& .MuiChip-icon': { ml: 0, mr: 0.5 },
+              }}
               size="small"
-              sx={{ ml: 1 }}
             />
           </Box>
 
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: '#9CA3AF' }}>
               Open: {formatCurrency(stock.open)}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: '#9CA3AF' }}>
               High: {formatCurrency(stock.high)}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: '#9CA3AF' }}>
               Low: {formatCurrency(stock.low)}
             </Typography>
           </Box>

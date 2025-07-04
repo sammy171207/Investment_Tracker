@@ -11,7 +11,7 @@ import {
   Popper,
   ClickAwayListener
 } from '@mui/material';
-import { searchStocks, setSelectedStock } from '../features/stock/stockSlice';
+import { searchStocksAction, setSelectedStock } from '../features/stock/stockSlice';
 
 const SearchBar = () => {
   const dispatch = useDispatch();
@@ -23,11 +23,11 @@ const SearchBar = () => {
     const value = event.target.value;
     setSearchTerm(value);
     setAnchorEl(event.currentTarget);
-    dispatch(searchStocks(value));
+    dispatch(searchStocksAction(value));
   };
 
-  const handleSelect = (ticker) => {
-    dispatch(setSelectedStock(ticker));
+  const handleSelect = (stock) => {
+    dispatch(setSelectedStock(stock));
     setSearchTerm('');
     setAnchorEl(null);
   };
@@ -45,6 +45,22 @@ const SearchBar = () => {
         value={searchTerm}
         onChange={handleSearch}
         size="small"
+        sx={{
+          background: '#23272F',
+          color: '#F3F4F6',
+          borderRadius: 2,
+          '& .MuiOutlinedInput-root': {
+            color: '#F3F4F6',
+            borderRadius: 2,
+            background: '#23272F',
+            '& fieldset': { borderColor: '#374151' },
+            '&:hover fieldset': { borderColor: '#60A5FA' },
+          },
+          '& .MuiInputBase-input': { color: '#F3F4F6' },
+        }}
+        InputProps={{
+          style: { color: '#F3F4F6' },
+        }}
       />
       <Popper
         open={Boolean(anchorEl) && searchResults.length > 0}
@@ -53,19 +69,20 @@ const SearchBar = () => {
         style={{ width: anchorEl?.offsetWidth, zIndex: 1300 }}
       >
         <ClickAwayListener onClickAway={handleClickAway}>
-          <Paper elevation={3}>
+          <Paper elevation={0} sx={{ background: '#23272F', color: '#F3F4F6', borderRadius: 2, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)' }}>
             <List>
               {searchResults.map((stock) => (
                 <ListItem
-                  key={stock.ticker}
+                  key={`${stock.ticker}-${stock.name}`}
                   button
-                  onClick={() => handleSelect(stock.ticker)}
+                  onClick={() => handleSelect(stock)}
+                  sx={{ '&:hover': { bgcolor: '#1E293B' } }}
                 >
                   <ListItemText
                     primary={
                       <Box display="flex" justifyContent="space-between">
-                        <Typography variant="body1">{stock.ticker}</Typography>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="body1" sx={{ color: '#F3F4F6', fontWeight: 600 }}>{stock.ticker}</Typography>
+                        <Typography variant="body2" sx={{ color: '#9CA3AF' }}>
                           {stock.name}
                         </Typography>
                       </Box>

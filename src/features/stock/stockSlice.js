@@ -1,5 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from 'axios';
+import { 
+  getStockCandles, 
+  searchStocks, 
+  getStockQuote, 
+  getCompanyProfile,
+  subscribeToStock,
+  unsubscribeFromStock
+} from '../../api/finnhub';
 
 // const API_KEY = "R2QtNzOLRS1Np9Ouf07SCD7K99hqK6WC";
 // const BASE_URL = "https://api.polygon.io/v3/reference/tickers";
@@ -167,41 +174,110 @@ const featuredStocks = [
 ];
 
 const initialState = {
-  selectedStock: featuredStocks[0],
+  selectedStock: null,
   selectedPeriod: '1week',
   searchResults: [],
   loading: false,
   error: null,
+  realTimeData: {},
 };
 
-export const searchStocks = createAsyncThunk(
+// Async thunks
+export const searchStocksAction = createAsyncThunk(
   'stock/searchStocks',
   async (query) => {
-    // For now, return dummy search results
-    return featuredStocks.filter(stock => 
-      stock.ticker.toLowerCase().includes(query.toLowerCase()) ||
-      stock.name.toLowerCase().includes(query.toLowerCase())
-    );
+    const results = await searchStocks(query);
+    return results;
   }
 );
 
-// Async thunk for fetching stock details
 export const fetchStockDetails = createAsyncThunk(
   'stock/fetchStockDetails',
   async (symbol, { rejectWithValue }) => {
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // For now, return dummy data
-      // In the future, this will be replaced with an actual API call
-      const stock = dummyStocks[symbol];
-      if (!stock) {
-        throw new Error('Stock not found');
-      }
-      return stock;
+      const [quote, profile] = await Promise.all([
+        getStockQuote(symbol),
+        getCompanyProfile(symbol)
+      ]);
+
+      return {
+        ticker: symbol,
+        name: profile.name,
+        currentPrice: quote.c,
+        change: quote.d,
+        changePercent: quote.dp,
+        open: quote.o,
+        high: quote.h,
+        low: quote.l,
+        previousClose: quote.pc,
+        marketCap: profile.marketCapitalization,
+        sector: profile.finnhubIndustry,
+        website: profile.weburl,
+        logo: profile.logo
+      };
     } catch (error) {
       return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchChartData = createAsyncThunk(
+  'stock/fetchChartData',
+  async ({ symbol, period }, { rejectWithValue }) => {
+    try {
+      // For development, use dummy data
+      if (process.env.NODE_ENV === 'development') {
+        const dummyData = dummyStocks[symbol]?.chartData?.[period] || [];
+        return {
+          period,
+          data: dummyData
+        };
+      }
+
+      // For production, use actual API
+      const end = Math.floor(Date.now() / 1000);
+      let start;
+      let resolution;
+
+      switch (period) {
+        case '1week':
+          start = end - 7 * 24 * 60 * 60;
+          resolution = '1D';
+          break;
+        case '1month':
+          start = end - 30 * 24 * 60 * 60;
+          resolution = '1D';
+          break;
+        case '1year':
+          start = end - 365 * 24 * 60 * 60;
+          resolution = '1W';
+          break;
+        default:
+          start = end - 7 * 24 * 60 * 60;
+          resolution = '1D';
+      }
+
+      const data = await getStockCandles(symbol, resolution, start, end);
+      
+      return {
+        period,
+        data: data.t.map((timestamp, index) => ({
+          date: new Date(timestamp * 1000).toISOString().split('T')[0],
+          open: data.o[index],
+          high: data.h[index],
+          low: data.l[index],
+          close: data.c[index],
+          volume: data.v[index]
+        }))
+      };
+    } catch (error) {
+      console.error('Error fetching chart data:', error);
+      // If API call fails, fall back to dummy data
+      const dummyData = dummyStocks[symbol]?.chartData?.[period] || [];
+      return {
+        period,
+        data: dummyData
+      };
     }
   }
 );
@@ -315,14 +391,25 @@ const stockSlice = createSlice({
       state.selectedPeriod = action.payload;
     },
     setSelectedStock: (state, action) => {
-      const stock = featuredStocks.find(s => s.ticker === action.payload);
-      if (stock) {
+      const stock = action.payload;
+      if (typeof stock === 'string') {
+        // If only the ticker is provided, use the dummy data
+        state.selectedStock = dummyStocks[stock] || null;
+      } else {
+        // If full stock object is provided, use it
         state.selectedStock = stock;
       }
     },
     clearSearchResults: (state) => {
       state.searchResults = [];
       state.error = null;
+    },
+    updateRealTimePrice: (state, action) => {
+      const { symbol, price } = action.payload;
+      if (state.selectedStock?.ticker === symbol) {
+        state.selectedStock.currentPrice = price;
+      }
+      state.realTimeData[symbol] = price;
     }
   },
   extraReducers: (builder) => {
@@ -367,15 +454,15 @@ const stockSlice = createSlice({
       });
       */
       // Search stocks
-      .addCase(searchStocks.pending, (state) => {
+      .addCase(searchStocksAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(searchStocks.fulfilled, (state, action) => {
+      .addCase(searchStocksAction.fulfilled, (state, action) => {
         state.loading = false;
         state.searchResults = action.payload;
       })
-      .addCase(searchStocks.rejected, (state, action) => {
+      .addCase(searchStocksAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
@@ -387,13 +474,44 @@ const stockSlice = createSlice({
       .addCase(fetchStockDetails.fulfilled, (state, action) => {
         state.loading = false;
         state.selectedStock = action.payload;
+        // Subscribe to real-time updates
+        subscribeToStock(action.payload.ticker, (price) => {
+          state.dispatch(updateRealTimePrice({ 
+            symbol: action.payload.ticker, 
+            price 
+          }));
+        });
       })
       .addCase(fetchStockDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Fetch chart data
+      .addCase(fetchChartData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchChartData.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.selectedStock) {
+          state.selectedStock.chartData = {
+            ...state.selectedStock.chartData,
+            [action.payload.period]: action.payload.data
+          };
+        }
+      })
+      .addCase(fetchChartData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   }
 });
 
-export const { setPeriod, setSelectedStock, clearSearchResults } = stockSlice.actions;
+export const { 
+  setPeriod, 
+  setSelectedStock, 
+  clearSearchResults,
+  updateRealTimePrice 
+} = stockSlice.actions;
+
 export default stockSlice.reducer;

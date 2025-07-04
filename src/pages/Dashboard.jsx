@@ -80,19 +80,21 @@ const Dashboard = () => {
   const { selectedStock } = useSelector((state) => state.stock);
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Dashboard
-      </Typography>
+    <Container maxWidth="lg" sx={{ mt: 0, mb: 0, p: 0 }}>
+      <Box sx={{ mb: 6, p: { xs: 2, md: 4 }, background: '#23272F', borderRadius: 4, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)' }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: '#F3F4F6' }}>
+          Dashboard
+        </Typography>
+      </Box>
 
       {/* Featured Stocks */}
-      <Box mb={4}>
-        <Typography variant="h6" gutterBottom>
+      <Box mb={4} sx={{ background: '#23272F', borderRadius: 4, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)', p: { xs: 2, md: 4 } }}>
+        <Typography variant="h6" gutterBottom sx={{ color: '#F3F4F6', fontWeight: 600 }}>
           Featured Stocks
         </Typography>
         <Grid container spacing={3}>
           {featuredStocks.map((stock) => (
-            <Grid key={stock.ticker} xs={12} md={4}>
+            <Grid key={stock.ticker} item xs={12} md={4}>
               <StockCard stock={stock} />
             </Grid>
           ))}
@@ -100,8 +102,8 @@ const Dashboard = () => {
       </Box>
 
       {/* Stock Chart */}
-      <Box>
-        <Typography variant="h6" gutterBottom>
+      <Box sx={{ background: '#23272F', borderRadius: 4, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)', p: { xs: 2, md: 4 } }}>
+        <Typography variant="h6" gutterBottom sx={{ color: '#F3F4F6', fontWeight: 600 }}>
           Stock Chart
         </Typography>
         <StockChart />

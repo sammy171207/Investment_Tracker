@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Typography, Paper, ButtonGroup, Button, Grid } from '@mui/material';
-import { setPeriod } from '../features/stock/stockSlice';
+import { setPeriod, fetchChartData } from '../features/stock/stockSlice';
 import {
   LineChart,
   Line,
@@ -19,6 +19,12 @@ const StockChart = () => {
   const dispatch = useDispatch();
   const { selectedPeriod, selectedStock } = useSelector((state) => state.stock);
   const chartData = selectedStock?.chartData?.[selectedPeriod] || [];
+
+  useEffect(() => {
+    if (selectedStock?.ticker) {
+      dispatch(fetchChartData({ symbol: selectedStock.ticker, period: selectedPeriod }));
+    }
+  }, [dispatch, selectedStock?.ticker, selectedPeriod]);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
@@ -46,8 +52,8 @@ const StockChart = () => {
 
   if (!selectedStock) {
     return (
-      <Paper elevation={3} sx={{ p: 2 }}>
-        <Typography variant="h6" align="center">
+      <Paper elevation={0} sx={{ p: 4, background: '#23272F', color: '#F3F4F6', borderRadius: 4, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)' }}>
+        <Typography variant="h6" align="center" sx={{ color: '#9CA3AF' }}>
           Select a stock to view its chart
         </Typography>
       </Paper>
@@ -55,21 +61,21 @@ const StockChart = () => {
   }
 
   return (
-    <Paper elevation={3} sx={{ p: 2 }}>
+    <Paper elevation={0} sx={{ p: { xs: 2, md: 4 }, background: '#23272F', color: '#F3F4F6', borderRadius: 4, boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)' }}>
       {/* Stock Info Header */}
       <Box mb={3}>
         <Grid container spacing={2} alignItems="center">
           <Grid xs={12} md={6}>
-            <Typography variant="h5" component="div">
+            <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', color: '#60A5FA' }}>
               {selectedStock.name} ({selectedStock.ticker})
             </Typography>
             <Box display="flex" alignItems="center" gap={1}>
-              <Typography variant="h4" component="div">
+              <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: '#F3F4F6' }}>
                 {formatPrice(selectedStock.currentPrice)}
               </Typography>
-              <Box display="flex" alignItems="center" color={selectedStock.change >= 0 ? 'success.main' : 'error.main'}>
-                {selectedStock.change >= 0 ? <TrendingUpIcon /> : <TrendingDownIcon />}
-                <Typography variant="body1" component="span">
+              <Box display="flex" alignItems="center" sx={{ color: selectedStock.change >= 0 ? '#22D3EE' : '#F87171', fontWeight: 600 }}>
+                {selectedStock.change >= 0 ? <TrendingUpIcon sx={{ color: '#22D3EE' }} /> : <TrendingDownIcon sx={{ color: '#F87171' }} />}
+                <Typography variant="body1" component="span" sx={{ color: selectedStock.change >= 0 ? '#22D3EE' : '#F87171', fontWeight: 600 }}>
                   {formatChange(selectedStock.change)} ({formatPercent(selectedStock.changePercent)})
                 </Typography>
               </Box>
@@ -77,22 +83,22 @@ const StockChart = () => {
           </Grid>
           <Grid xs={12} md={6}>
             <Box display="flex" justifyContent="flex-end">
-              <ButtonGroup variant="contained" size="small">
+              <ButtonGroup variant="contained" size="small" sx={{ background: '#181C23', borderRadius: 2, boxShadow: 'none' }}>
                 <Button 
                   onClick={() => dispatch(setPeriod('1week'))}
-                  color={selectedPeriod === '1week' ? 'primary' : 'inherit'}
+                  sx={{ background: selectedPeriod === '1week' ? '#2563EB' : 'transparent', color: '#F3F4F6', fontWeight: 600, borderRadius: 2, '&:hover': { background: '#1D4ED8' } }}
                 >
                   1 Week
                 </Button>
                 <Button 
                   onClick={() => dispatch(setPeriod('1month'))}
-                  color={selectedPeriod === '1month' ? 'primary' : 'inherit'}
+                  sx={{ background: selectedPeriod === '1month' ? '#2563EB' : 'transparent', color: '#F3F4F6', fontWeight: 600, borderRadius: 2, '&:hover': { background: '#1D4ED8' } }}
                 >
                   1 Month
                 </Button>
                 <Button 
                   onClick={() => dispatch(setPeriod('1year'))}
-                  color={selectedPeriod === '1year' ? 'primary' : 'inherit'}
+                  sx={{ background: selectedPeriod === '1year' ? '#2563EB' : 'transparent', color: '#F3F4F6', fontWeight: 600, borderRadius: 2, '&:hover': { background: '#1D4ED8' } }}
                 >
                   1 Year
                 </Button>
@@ -108,34 +114,46 @@ const StockChart = () => {
           <LineChart
             data={chartData}
             margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
+              top: 24,
+              right: 32,
+              left: 16,
+              bottom: 24,
             }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid stroke="#374151" />
             <XAxis 
               dataKey="date" 
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: '#9CA3AF' }}
               interval={selectedPeriod === '1year' ? 'preserveStartEnd' : 0}
+              stroke="#9CA3AF"
             />
-            <YAxis domain={['auto', 'auto']} />
-            <Tooltip />
-            <Legend />
+            <YAxis 
+              domain={['auto', 'auto']}
+              tickFormatter={(value) => formatPrice(value)}
+              tick={{ fontSize: 12, fill: '#9CA3AF' }}
+              stroke="#9CA3AF"
+            />
+            <Tooltip 
+              formatter={(value) => formatPrice(value)}
+              labelFormatter={(label) => `Date: ${label}`}
+              contentStyle={{ background: '#23272F', color: '#F3F4F6', border: 'none', borderRadius: 8 }}
+            />
+            <Legend wrapperStyle={{ color: '#F3F4F6' }} />
             <Line
               type="monotone"
               dataKey="close"
-              stroke="#8884d8"
+              stroke="#60A5FA"
               name="Close Price"
               dot={selectedPeriod !== '1year'}
+              strokeWidth={3}
             />
             <Line
               type="monotone"
               dataKey="open"
-              stroke="#82ca9d"
+              stroke="#22D3EE"
               name="Open Price"
               dot={selectedPeriod !== '1year'}
+              strokeWidth={3}
             />
           </LineChart>
         </ResponsiveContainer>
